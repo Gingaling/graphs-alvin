@@ -238,3 +238,145 @@ function explore(graph, node, visited) {
     }
     return size;
 }
+
+console.log(largestComponent(graph));
+
+// Shortest Path - Write a function, shortestPath, that takes in an array of edges for an undirected graph and two nodes (nodeA, nodeB). The function should return the length of the shortest path between A and B. Consider the length as the number of edges in the path, not the number of nodes. If there is no path between A and B, then return -1
+
+// Use breadth first
+
+const edges = [
+  ['w', 'x'],
+  ['x', 'y'],
+  ['z', 'y'],
+  ['z', 'v'],
+  ['w', 'v']
+];
+
+function shortestPath(edges, nodeA, nodeB) {
+    const graph = buildGraph(edges);
+    visited = new Set([ nodeA ]);
+    const queue = [ [nodeA, 0] ];
+    
+    while (queue.length > 0) {
+        const [ node, distance ] = queue.shift();
+    
+        if (node === nodeB) return distance;
+    
+        for (let neighbor of graph[node]) {
+            if (!visited.has(neighbor)) {
+                visited.add(neighbor);
+                queue.push([ neighbor, distance + 1 ]);
+            }
+        }
+    }
+    return -1;
+}
+
+function buildGraph(edges) {
+    const graph = {};
+
+    for (let edge of edges) {
+        const [ a, b ] = edge;
+        if (!(a in graph)) graph[a] = [];
+        if (!(b in graph)) graph[b] = [];
+        graph[a].push(b);
+        graph[b].push(a);
+    }
+    return graph;
+}
+
+// Island Count - Write a function, islandCount, that takes in a grid containing Ws and Ls. W represents water and L represents land. The function should return the number of islands on the grid. An island is a vertically or horizontally connected region of land
+
+const grid = [
+  ['W', 'L', 'W', 'W', 'W'],
+  ['W', 'L', 'W', 'W', 'W'],
+  ['W', 'W', 'W', 'L', 'W'],
+  ['W', 'W', 'L', 'L', 'W'],
+  ['L', 'W', 'W', 'L', 'L'],
+  ['L', 'L', 'W', 'W', 'W'],
+];
+
+function islandCount(grid) {
+    const visited = new Set();
+    let count = 0;
+
+    for (let r = 0; r < grid.length; r += 1) {
+        for (let c = 0; c < grid[0].length; c += 1) {
+            if (explore(grid, r, c, visited) === true) {
+                count += 1;
+            }
+        }
+    }
+    return count;
+}
+
+function explore(grid, r, c, visited) {
+    const rowInBounds = 0 <= r && r < grid.length;
+    const colInBounds = 0 <= c && c < grid.length;
+    if (!rowInBounds || !colInBounds) return false;
+
+    if (grid[r][c] === 'W') return false;
+
+    const pos = r + ',' + c;
+    if (visited.has(pos)) return false;
+    visited.add(pos);
+
+    explore(grid, r-1, c, visited);
+    explore(grid, r+1, c, visited);
+    explore(grid, r, c-1, visited);
+    explore(grid, r, c+1, visited);
+
+    return true; 
+}
+
+// Minimum Island (size) - Write a function, minimumIsland, that takes in a grid containing Ws and Ls. W represents water and L represents land. The function should return the size of the smallest island. An island is a vertically or horizontally connected region of land.
+
+// You may assume that the grid contains at least one island
+
+const grid = [
+  ['W', 'L', 'W', 'W', 'W'],
+  ['W', 'L', 'W', 'W', 'W'],
+  ['W', 'W', 'W', 'L', 'W'],
+  ['W', 'W', 'L', 'L', 'W'],
+  ['L', 'W', 'W', 'L', 'L'],
+  ['L', 'L', 'W', 'W', 'W'],
+];
+
+minimumIsland(grid); // -> 2
+
+function minimumIsland(grid) {
+    const visited = new Set();
+    let minSize = grid.length * grid[0].length;
+
+    for (let r = 0; r < grid.length; r += 1) {
+        for (let c = 0; c < grid[0].length; c += 1) {
+            let size = explore(grid, r, c, visited);
+            if (size < minSize) {
+                minSize = size;
+            }
+        }
+    }
+    return minSize;
+}
+
+function explore(grid, r, c, visited) {
+    tempSize = 0;
+    const rowInBounds = 0 <= r && r < grid.length;
+    const colInBounds = 0 <= c && c < grid.length;
+    if (!rowInBounds || !colInBounds) return 0;
+
+    if (grid[r][c] === 'W') return 0;
+
+    const pos = r + ',' + c;
+    if (visited.has(pos)) return 0;
+    visited.add(pos);
+
+    let tempSize = 1;
+    tempSize += explore(grid, r-1, c, visited);
+    tempSize += explore(grid, r+1, c, visited);
+    tempSize += explore(grid, r, c-1, visited);
+    tempSize += explore(grid, r, c+1, visited);
+
+    return tempSize; 
+}
