@@ -343,16 +343,16 @@ const grid = [
   ['L', 'L', 'W', 'W', 'W'],
 ];
 
-minimumIsland(grid); // -> 2
+// minimumIsland(grid); // -> 2
 
 function minimumIsland(grid) {
     const visited = new Set();
-    let minSize = grid.length * grid[0].length;
+    let minSize = Infinity;
 
     for (let r = 0; r < grid.length; r += 1) {
         for (let c = 0; c < grid[0].length; c += 1) {
-            let size = explore(grid, r, c, visited);
-            if (size < minSize) {
+            const size = explore(grid, r, c, visited);
+            if (size > 0 && size < minSize) {
                 minSize = size;
             }
         }
@@ -380,3 +380,5 @@ function explore(grid, r, c, visited) {
 
     return tempSize; 
 }
+
+minimumIsland(grid);
