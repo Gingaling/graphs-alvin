@@ -67,3 +67,89 @@ const graph = {
 breadthFirstPrint(graph, 'a');
 
 // Want to generate true or false, whether there is a path from source to destination
+
+// Using depth first (source: f; destination: k), coded recursively
+
+function hasPath(graph, src, dst) {
+    if (src === dst) return true;
+
+    for (let neighbor of graph[src]) {
+        if (hasPath(graph, neighbor, dst) === true) {
+            return true;
+        }
+    } 
+    return false;
+}
+
+const graph = {
+	f:['g', 'i'],
+	g:['h'],
+	h:[],
+	i:['g', 'k'],
+	j:['i'],
+	k:[]
+};
+
+console.log(hasPath(graph, 'f', 'k'));
+
+// Using breadth first search
+
+function hasPath(graph, src, dst) {
+    const queue = [ src ];
+    while (queue.length > 0) {
+        const current = queue.shift();
+        if (current === dst) return true;
+        for (let neighbor of graph[current]) {
+            queue.push(neighbor);
+        }
+    }
+    return false;
+}
+
+const graph = {
+	f: ['g', 'i'],
+	g: ['h'],
+	h: [],
+	i: ['g', 'k'],
+	j: ['i'],
+	k: []
+};
+
+console.log(hasPath(graph, 'f', 'k'));
+
+// Undirected graph - to guard against cycling through a path in na infinate loop, create a visited object
+
+const edges: [
+    ['i', 'j'],
+    ['k', 'i'],
+    ['m', 'k'],
+    ['k', 'l'],
+    ['o', 'n']
+]
+
+function buildGraph(edges) {
+    const graph = {};
+
+    for (let edge of edges) {
+        const [ a, b ] = edge;
+        if (!(a in graph)) graph[a] = [];
+        if (!(b in graph)) graph[b] = [];
+        graph[a].push(b);
+        graph[b].push(a);
+    }
+    return graph;
+}
+
+function undirectedPath(edges, nodeA, nodeB) {
+    const graph = buildGraph(edges);
+}
+
+const graph = {
+    i:['j', 'k'],
+    j:['i'],
+    k:['i', 'l', 'm'],
+    l:['k'],
+    m:['k'],
+    n:['o'],
+    o:['n']
+}
